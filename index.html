@@ -5952,6 +5952,25 @@ html[data-mart] body.nvg-mart[data-page] .legal-person-name{white-space:nowrap}
 
 html[data-mart] body.nvg-mart[data-page] .legal-revision{display:block;margin-top:6px}
 
+/* Contents use the panel's full width at every breakpoint, including phone rotation. */
+@media screen {
+ html[data-mart] body.nvg-mart[data-page] #sidebar.sidebar #sideNav{display:block!important;min-width:0;width:100%;padding:4px 5px 12px!important}
+ html[data-mart] body.nvg-mart[data-page] #sidebar.sidebar :is(.nvg-side-primary,.nvg-nav-entries){display:block!important;min-width:0;width:100%;grid-template-columns:none!important}
+ html[data-mart] body.nvg-mart[data-page] #sidebar.sidebar .nvg-nav-fold{width:100%;min-width:0;margin:4px 0;grid-column:auto}
+ html[data-mart] body.nvg-mart[data-page] #sidebar.sidebar #sideNav :is(.nav-link,.nvg-nav-fold>summary){display:flex!important;align-items:center;gap:10px!important;width:100%;min-width:0;min-height:44px!important;margin:2px 0;padding:10px 8px!important;font-size:15px!important;text-align:left}
+ html[data-mart] body.nvg-mart[data-page] #sidebar.sidebar #sideNav :is(a,summary,summary>span){white-space:normal!important;overflow-wrap:break-word!important;word-break:normal!important;hyphens:none!important}
+ html[data-mart] body.nvg-mart[data-page] #sidebar.sidebar #sideNav :is(.nav-link>span,.nvg-nav-fold>summary>span){flex:1 1 auto;min-width:0}
+ html[data-mart] body.nvg-mart[data-page] #sidebar.sidebar #sideNav .nvg-nav-fold>summary>svg:first-child{display:block!important;width:18px!important;height:18px!important;flex:0 0 18px}
+ html[data-mart] body.nvg-mart[data-page] #sidebar.sidebar #sideNav .nvg-nav-fold>summary .chevron{width:14px!important;height:14px!important;flex:0 0 14px;margin-left:auto}
+ html[data-mart] body.nvg-mart[data-page] #sidebar.sidebar .nvg-nav-entries a{display:block;min-width:0;width:100%;min-height:44px}
+}
+/* A landscape phone uses an overlay instead of squeezing both the menu and page. */
+@media screen and (max-width:1100px) and (max-height:600px) and (orientation:landscape){
+ html[data-mart] body.nvg-mart[data-page] .workspace{margin-left:0!important;transition:none}
+ html[data-mart] body.nvg-mart[data-page] #sidebar.sidebar{inset:max(8px,env(safe-area-inset-top)) auto max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))!important;width:min(380px,calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right)))!important;max-height:calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;padding:10px!important;z-index:110!important}
+ html[data-mart] body.nvg-mart[data-page]:not(.nav-collapsed) #navShade{display:block!important;position:fixed;inset:0!important;background:rgb(0 0 0 / .25);z-index:109}
+}
+
 /* Shared MART components. The header geometry belongs exclusively to mart.css. */
 @media screen {
  html[data-mart] body.nvg-mart[data-page] #main.page{max-width:var(--reading-width,1280px)!important;container-type:inline-size;container-name:nvg-content}
@@ -6929,7 +6948,7 @@ let state=JSON.parse(JSON.stringify(initial)),storageOK=true;
 try{const old=JSON.parse(localStorage.getItem('nvg-reader-v1')||'null'),saved=JSON.parse(localStorage.getItem('nvg-reader-v2')||'null');if(saved?.version===2)state={...state,...saved,route:{...state.route,...saved.route}};else if(old){state.saved=arr(old.saved).map(x=>'article/'+String(x).toUpperCase());state.checked=arr(old.checked)}}catch{storageOK=false}
 if(typeof state.route.workLand!=='string')state.route.workLand=validPlanLand(state.route.land);
 if (state.theme === 'lavendel') state.theme = 'lavender';
-const compactNavigation=matchMedia('(max-width: 780px)');
+const compactNavigation=matchMedia('(max-width:780px), (max-width:1100px) and (max-height:600px)');
 const storedSidebar=state.navPreferences;
 state.navPreferences={compact:false,wide:false};
 // Older versions persisted the default open state on every visit. A closed state was explicit.
@@ -7182,9 +7201,9 @@ document.addEventListener('click',event=>{
   }
   menuDestination=link && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey ? link.hash : '';
 },true);
-const phoneNavigation=matchMedia('(max-width:720px), (max-width:900px) and (max-height:480px)');
+const phoneNavigation=compactNavigation;
 function contentsTrigger(){
-  return phoneNavigation.matches?$('mobileNav').querySelector('[data-section=topics]'):$('menuButton');
+  return [$('menuButton'),$('mobileNav').querySelector('[data-section=topics]')].find(button=>button?.getClientRects().length)||$('menuButton');
 }
 function closeSidebar(){
   tabAfterMenuOpen=false;
