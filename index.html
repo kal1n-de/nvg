@@ -6088,6 +6088,13 @@ html[data-mart] body.nvg-mart[data-page] #main .legal-detail-line+.legal-detail-
   html[data-mart][data-theme] body.nvg-mart[data-page] .topbar {
     background:var(--chrome)!important;color:var(--ink)!important;
   }
+  /* HBS assigns icon colour on the SVG, independent of the button text. */
+  html[data-mart][data-theme] body.nvg-mart[data-page] .top-actions .control svg {
+    color:var(--accent)!important;
+  }
+  html[data-mart][data-theme] body.nvg-mart[data-page] .search-submit svg {
+    color:var(--muted);
+  }
   html[data-mart][data-theme] body.nvg-mart[data-page] #main :is(.mart-home-panel,.home-people .portal-choice) {
     background:var(--surface)!important;border:1px solid var(--line)!important;
     border-radius:var(--mart-radius)!important;box-shadow:var(--mart-shadow)!important;
